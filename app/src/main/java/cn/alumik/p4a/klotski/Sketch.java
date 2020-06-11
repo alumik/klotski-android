@@ -36,13 +36,13 @@ public class Sketch extends PApplet {
 
     public void draw() {
         background(38, 191, 191);
-        for (Block block : mBlocks) {
+        for (final Block block : mBlocks) {
             block.show();
         }
     }
 
     public void touchStarted() {
-        for (Block block : mBlocks) {
+        for (final Block block : mBlocks) {
             if (block.contains(touches[0].x, touches[0].y)) {
                 mBlock = block;
             }

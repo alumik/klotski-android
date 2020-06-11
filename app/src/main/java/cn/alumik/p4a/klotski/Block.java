@@ -21,16 +21,16 @@ class Block {
     private int[] mMoveLimits;
     private boolean mDetectionFlag;
 
-    Block(Sketch sketch, int x, int y, int w, int h, boolean mainBlock) {
+    Block(final Sketch sketch, final int x, final int y,
+          final int w, final int h, final boolean mainBlock) {
         mSketch = sketch;
         mPos = new PVector(x, y);
         mSize = new PVector(w, h);
         mColor = mainBlock ? COLOR_MAIN : COLOR_NORMAL;
-
         setGrid(true);
     }
 
-    boolean contains(float x, float y) {
+    boolean contains(final float x, final float y) {
         return x >= mPos.x * mSketch.SCALE
                 && x < (mPos.x + mSize.x) * mSketch.SCALE
                 && y >= mPos.y * mSketch.SCALE
@@ -45,7 +45,7 @@ class Block {
                 mSize.x * mSketch.SCALE, mSize.y * mSketch.SCALE);
     }
 
-    private void setGrid(boolean state) {
+    private void setGrid(final boolean state) {
         for (int i = 0; i < mSize.x; i++) {
             for (int j = 0; j < mSize.y; j++) {
                 mSketch.grid[(int) mPos.x + i][(int) mPos.y + j] = state;
@@ -53,10 +53,13 @@ class Block {
         }
     }
 
-    private void getMoveLimit(int start, int size, int loopDir, boolean orientation, int index,
-                              int dir, int offset) {
+    private void getMoveLimit(final int start, final int size, final int loopDir,
+                              final boolean orientation, final int index,
+                              final int dir, final int offset) {
         for (int i = start; i >= -1 && i <= size; i += loopDir) {
-            if (i < 0 || i >= size || (orientation ? mSketch.grid[i][index] : mSketch.grid[index][i])) {
+            if (i < 0
+                    || i >= size
+                    || (orientation ? mSketch.grid[i][index] : mSketch.grid[index][i])) {
                 final int move = i + offset - loopDir;
                 if (loopDir > 0 == move < mMoveLimits[dir]) {
                     mMoveLimits[dir] = move;
@@ -66,8 +69,9 @@ class Block {
         }
     }
 
-    private void getMoveLimitPair(int start, int size, int loopDir, boolean orientation,
-                                  int indexCeil, int indexFloor, int dir, int offset) {
+    private void getMoveLimitPair(final int start, final int size, final int loopDir,
+                                  final boolean orientation, final int indexCeil,
+                                  final int indexFloor, final int dir, final int offset) {
         getMoveLimit(start, size, loopDir, orientation, indexCeil, dir, offset);
         if (indexCeil != indexFloor) {
             getMoveLimit(start, size, loopDir, orientation, indexFloor, dir, offset);
@@ -79,10 +83,12 @@ class Block {
         for (int x = 0; x < mSize.x; x++) {
             for (int y = 0; y < mSize.y; y++) {
                 final PVector relativePos = new PVector(mPos.x + x, mPos.y + y);
-                final PVector ceilPos = new PVector(PApplet.ceil(relativePos.x), PApplet.ceil(relativePos.y));
-                final PVector floorPos = new PVector(PApplet.floor(relativePos.x), PApplet.floor(relativePos.y));
-                final PVector roundPos = new PVector(PApplet.round(relativePos.x), PApplet.round(relativePos.y));
-
+                final PVector ceilPos =
+                        new PVector(PApplet.ceil(relativePos.x), PApplet.ceil(relativePos.y));
+                final PVector floorPos =
+                        new PVector(PApplet.floor(relativePos.x), PApplet.floor(relativePos.y));
+                final PVector roundPos =
+                        new PVector(PApplet.round(relativePos.x), PApplet.round(relativePos.y));
                 this.getMoveLimitPair((int) roundPos.x, Sketch.GAME_W, -1, HORIZONTAL,
                         (int) ceilPos.y, (int) floorPos.y, LEFT, 0);
                 this.getMoveLimitPair((int) roundPos.x, Sketch.GAME_W, 1, HORIZONTAL,
@@ -100,7 +106,8 @@ class Block {
             if (mDetectionFlag) {
                 getMoveLimits();
             }
-            mDetectionFlag = PApplet.abs(mPos.x - PApplet.round(mPos.x)) + PApplet.abs(mPos.y - PApplet.round(mPos.y)) == 0;
+            mDetectionFlag = PApplet.abs(mPos.x - PApplet.round(mPos.x)) +
+                    PApplet.abs(mPos.y - PApplet.round(mPos.y)) == 0;
         } else {
             if (mDetectionFlag) {
                 getMoveLimits();
